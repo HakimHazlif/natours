@@ -1,0 +1,37 @@
+const express = require('express');
+const {
+  getAllTours,
+  createTour,
+  getTour,
+  updateTour,
+  deleteTour,
+  aliasTopTours,
+  getTourStats,
+  getMonthlyPlan,
+} = require('../controllers/tourController');
+const { protect, restrictTo } = require('./../controllers/authController');
+
+const router = express.Router();
+
+router.route('/top-5-cheap').get(aliasTopTours, getAllTours); // aliasTopTours is middleware that create some hide query by this route
+
+// route of statistic
+router.route('/tour-stats').get(getTourStats);
+// route of monthly plan
+router.route('/monthly-plan/:year').get(getMonthlyPlan);
+
+router.route('/').get(protect, getAllTours).post(createTour);
+
+router
+  .route('/:id')
+  .get(getTour)
+  .patch(updateTour)
+  .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
+
+module.exports = router;
+
+// router.param('id', checkID); // param middleware
+
+// use root route here, because we used mounting router down.. it's like '/api/v1/tours'
+// router.route('/').get(getAllTours).post(checkBody, createTour);
+// to make an optional param add ? to it (example: /:x?)
