@@ -66,6 +66,7 @@ userSchema.methods.correctPassword = async function (
   candidatePassword,
   userPassword,
 ) {
+  // function compare between passwords
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
@@ -91,6 +92,13 @@ userSchema.methods.createPasswordResetToken = function () {
     .update(resetToken)
     .digest('hex');
   // sha256 is algorithm
+
+  /* this more secure than above
+  crypto.scrypt(resetToken, salt, 32, (err, derivedKey) => {
+    if (err) throw err;
+    const hash = `${salt}:${derivedKey.toString('hex')}`;
+  });
+  */
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 

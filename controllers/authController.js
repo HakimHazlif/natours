@@ -12,28 +12,23 @@ const signToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
-exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    role: req.body.role,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
-    passwordChangedAt: req.body.passwordChangedAt
-      ? new Date(req.body.passwordChangedAt)
-      : undefined,
-  });
-  // if we need to add a new administrator to our systme we can then simply just create a new user normally. and then go into MongoDB compass, and basically edit that role in there, to admin the user manually
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
+  res.status(statusCode).json({
     status: 'success',
     token,
     data: {
-      user: newUser,
+      user,
     },
   });
+};
+
+exports.signup = catchAsync(async (req, res, next) => {
+  const newUser = await User.create(req.body);
+  // if we need to add a new administrator to our systme we can then simply just create a new user normally. and then go into MongoDB compass, and basically edit that role in there, to admin the user manually
+
+  createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -51,13 +46,8 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401)); // we not really specifying what is incorrect here, for not helping attacker to focus on one of them by feeding it with random data
   }
 
-  // iif everthing ok, send token to client
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  // if everthing ok, send token to client
+  createSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -80,7 +70,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // 2) verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  // console.log(decoded); // you will get {id: _user_id_, iat: timestamp of the creation date, exp: timestamp of the expiation date}
+  // console.log(decoded); // you will get {id: user id, iat: timestamp of the creation date, exp: timestamp of the expiation date}
 
   // 3) check if user still exists
   const currentUser = await User.findById(decoded.id);
@@ -184,10 +174,23 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 3. Update changePasswordAt property for the user
 
   // 4. Log the user in, sent JWT
-  const token = signToken(user._id);
+  createSendToken(user, 200, res);
+});
 
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1. Get user from collection
+  const user = await User.findById(req.user.id).select('+password'); // req.user.id from protect middleware
+  // User.findByIdAndUpdate will NOT work as intended!
+
+  // 2. Check if POSTed current password is correct
+  if (!(await user.correctPassword(req.body.passwordCurrent, user.password)))
+    return next(new AppError('You current password is wrong!', 401));
+
+  // 3. If so, update password
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+
+  // 4. Log user in, send JWT
+  createSendToken(user, 200, res);
 });
