@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-const validator = require('validator');
+// const validator = require('validator');
 
 // I could say that Schema as Typescript
 // it's like setting  structure of SQL query
