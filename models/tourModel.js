@@ -150,7 +150,7 @@ tourSchema.pre(/^find/, function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'guides',
-    select: '-__v -passwordChangedAt', // don't encludes these two columns
+    select: '-__v -passwordChangedAt', // don't includes these two columns
   }); // populate: search in associated collection (User in this case) and get the user documents based on ids. look about guides in schema
 
   next();
