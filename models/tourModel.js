@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+// const User = require('./userModel'); for embedded
 // const validator = require('validator');
 
 // I could say that Schema as Typescript
@@ -80,6 +81,36 @@ const tourSchema = new mongoose.Schema(
     secretTour: {
       type: Boolean,
     },
+    startLocation: {
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      coordinates: [Number],
+      address: String,
+      description: String,
+    },
+    location: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    // guides: Array, // with embedded
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -97,6 +128,15 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
+// embedding tour guides
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+
+//   this.guides = await Promise.all(guidesPromises);
+
+//   next();
+// });
+
 // QUERY MIDDLEWARE
 tourSchema.pre(/^find/, function (next) {
   // /^find/ means anythig start with 'find' like find and findOne and findOneAndUpdate, etc;
@@ -104,6 +144,15 @@ tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
 
   this.start = Date.now();
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt', // don't encludes these two columns
+  }); // populate: search in associated collection (User in this case) and get the user documents based on ids. look about guides in schema
+
   next();
 });
 
