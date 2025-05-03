@@ -7,9 +7,10 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 
 const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
-const globalErrorHandler = require('./controllers/errorController');
+const reviewRouter = require('./routes/reviewRoutes');
 
 const app = express();
 
@@ -69,6 +70,7 @@ app.use((req, res, next) => {
 // ROUTES
 app.use('/api/v1/tours', tourRouter); // specify a middleware for a route.. this process is called Mounting the router
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // if user enter a wrong route. should put this middleware her after routes
 app.all('*', (req, res, next) => {
