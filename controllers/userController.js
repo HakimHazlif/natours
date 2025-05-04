@@ -1,7 +1,7 @@
 const User = require('./../models/userModel');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
-const { deleteOne } = require('./handlerFactory');
+const { deleteOne, updateOne } = require('./handlerFactory');
 
 // pervent update some fields shuch as role or id etc.
 const filterObj = (obj, ...allowedFields) => {
@@ -70,16 +70,13 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+// these controllers are only for administrators
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
     message: 'This route is not yet defined',
   });
 };
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
+
+exports.updateUser = updateOne(User); // don not update password with this
 exports.deleteUser = deleteOne(User);
