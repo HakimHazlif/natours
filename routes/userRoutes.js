@@ -16,6 +16,7 @@ const {
   resetPassword,
   updatePassword,
   protect,
+  restrictTo,
 } = require('./../controllers/authController');
 const { validIdParam } = require('../controllers/handlerFactory');
 
@@ -26,16 +27,22 @@ router.post('/login', login);
 
 router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
-router.patch('/updateMyPassword', protect, updatePassword);
 
-router.get('/me', protect, getMe, getUser);
-router.patch('/updateMe', protect, updateMe);
-router.delete('/deleteMe', protect, deleteMe);
+router.use(protect); // use protect middleware for all the middlewares that come after this line
+
+router.patch('/updateMyPassword', updatePassword);
+
+router.get('/me', getMe, getUser);
+router.patch('/updateMe', updateMe);
+router.delete('/deleteMe', deleteMe);
+
+router.use(restrictTo('admin'));
 
 router.route('/').get(getAllUsers).post(createUser);
+
 router
   .route('/:id')
-  .get(getUser)
+  .get(validIdParam, getUser)
   .patch(validIdParam, updateUser)
   .delete(validIdParam, deleteUser);
 

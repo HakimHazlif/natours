@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Review = require('../models/reviewModel');
-// const catchAsync = require('../utils/catchAsync');
 const {
   deleteOne,
   updateOne,
@@ -9,6 +8,7 @@ const {
   getAll,
 } = require('./handlerFactory');
 const AppError = require('../utils/appError');
+// const catchAsync = require('../utils/catchAsync');
 
 exports.setTourUserIds = (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.tourId)) {

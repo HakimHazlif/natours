@@ -15,15 +15,17 @@ const router = express.Router({ mergeParams: true }); // to merge routes of this
 // POST: /tours/:tourId/reviews
 // GET: /tours/:tourId/reviews
 
+router.use(protect);
+
 router
   .route('/')
   .get(getAllReviews)
-  .post(protect, restrictTo('user'), setTourUserIds, createReview);
+  .post(restrictTo('user'), setTourUserIds, createReview);
 
 router
   .route('/:id')
   .get(validIdParam, getReview)
-  .patch(validIdParam, updateReview)
-  .delete(validIdParam, deleteReview);
+  .patch(restrictTo('user', 'admin'), validIdParam, updateReview)
+  .delete(restrictTo('user', 'admin'), validIdParam, deleteReview);
 
 module.exports = router;
