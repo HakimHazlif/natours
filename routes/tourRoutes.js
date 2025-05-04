@@ -10,6 +10,7 @@ const {
   getMonthlyPlan,
 } = require('../controllers/tourController');
 const { protect, restrictTo } = require('./../controllers/authController');
+const reviewRouter = require('./reviewRoutes');
 
 const router = express.Router();
 
@@ -27,6 +28,11 @@ router
   .get(getTour)
   .patch(updateTour)
   .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
+
+// router
+//   .route('/:tourId/reviews')
+//   .post(protect, restrictTo('user'), createReview); // instead of this we use middleware below
+router.use('/:tourId/reviews', reviewRouter); // merge routes
 
 module.exports = router;
 
