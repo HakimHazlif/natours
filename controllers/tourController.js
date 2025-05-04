@@ -37,7 +37,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
     return next(new AppError('Invalid ID format', 400));
   }
 
-  const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id).populate('reviews');
   // findById is similar to findOne({ _id: req.params.id})
 
   if (!tour) {
