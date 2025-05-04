@@ -1,7 +1,7 @@
 const User = require('./../models/userModel');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
-const { deleteOne, updateOne } = require('./handlerFactory');
+const { deleteOne, updateOne, getOne, getAll } = require('./handlerFactory');
 
 // pervent update some fields shuch as role or id etc.
 const filterObj = (obj, ...allowedFields) => {
@@ -12,25 +12,6 @@ const filterObj = (obj, ...allowedFields) => {
   });
 
   return newObj;
-};
-
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-
-exports.getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
@@ -74,9 +55,11 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
 exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'This route is not yet defined',
+    message: 'This route is not defined! Please use /signup instead',
   });
 };
 
+exports.getAllUsers = getAll(User);
+exports.getUser = getOne(User);
 exports.updateUser = updateOne(User); // don not update password with this
 exports.deleteUser = deleteOne(User);

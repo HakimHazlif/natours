@@ -16,6 +16,7 @@ const {
   updatePassword,
   protect,
 } = require('./../controllers/authController');
+const { validIdParam } = require('../controllers/handlerFactory');
 
 const router = express.Router();
 
@@ -30,6 +31,10 @@ router.patch('/updateMe', protect, updateMe);
 router.delete('/deleteMe', protect, deleteMe);
 
 router.route('/').get(getAllUsers).post(createUser);
-router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+router
+  .route('/:id')
+  .get(getUser)
+  .patch(validIdParam, updateUser)
+  .delete(validIdParam, deleteUser);
 
 module.exports = router;
