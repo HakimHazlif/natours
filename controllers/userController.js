@@ -1,6 +1,7 @@
 const User = require('./../models/userModel');
 const AppError = require('./../utils/appError');
 const catchAsync = require('./../utils/catchAsync');
+const { deleteOne } = require('./handlerFactory');
 
 // pervent update some fields shuch as role or id etc.
 const filterObj = (obj, ...allowedFields) => {
@@ -69,21 +70,16 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.createUser = (req, res) => {
-//   res.status(500).json({
-//     status: 'error',
-//     message: 'This route is not yet defined',
-//   });
-// };
-// exports.updateUser = (req, res) => {
-//   res.status(500).json({
-//     status: 'error',
-//     message: 'This route is not yet defined',
-//   });
-// };
-// exports.deleteUser = (req, res) => {
-//   res.status(500).json({
-//     status: 'error',
-//     message: 'This route is not yet defined',
-//   });
-// };
+exports.createUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+exports.updateUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+exports.deleteUser = deleteOne(User);
