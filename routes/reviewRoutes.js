@@ -7,8 +7,8 @@ const { protect, restrictTo } = require('../controllers/authController');
 
 const router = express.Router({ mergeParams: true }); // to merge routes of this router with tour router
 
-// POST /tours/:tourId/reviews
-// Get /tours/reviews
+// POST: /tours/:tourId/reviews
+// GET: /tours/:tourId/reviews
 
 router
   .route('/')
