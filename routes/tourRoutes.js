@@ -9,6 +9,7 @@ const {
   getTourStats,
   getMonthlyPlan,
   getToursWithin,
+  getDistances,
 } = require('../controllers/tourController');
 const { protect, restrictTo } = require('./../controllers/authController');
 const reviewRouter = require('./reviewRoutes');
@@ -29,6 +30,8 @@ router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get(getToursWithin);
 // this '/tours-within/123/center/-35.2,6.15/unit/mi' so cleaner than this '/tours-within?distance=123&center=-35.2,6.15&unit=mi'
+
+router.route('/distances/:latlng/unit/:unit').get(getDistances);
 
 router
   .route('/')
