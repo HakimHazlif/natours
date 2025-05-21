@@ -79,6 +79,16 @@ app.get('/', (req, res) => {
     user: 'Jonas',
   });
 });
+app.get('/overview', (req, res) => {
+  res.status(200).render('overview', {
+    title: 'All Tours',
+  });
+});
+app.get('/tour', (req, res) => {
+  res.status(200).render('tour', {
+    title: 'The Forst Hiker Tour',
+  });
+});
 
 app.use('/api/v1/tours', tourRouter); // specify a middleware for a route.. this process is called Mounting the router
 app.use('/api/v1/users', userRouter);
