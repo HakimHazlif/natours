@@ -10,7 +10,7 @@ block content
           .card__header
             .card__picture
               .card__picture-overlay &nbsp;
-              img.card__picture-img(src=`img/tours/${imageCover}`, alt=`${name}`)
+              img.card__picture-img(src=`/img/tours/${imageCover}`, alt=`${name}`)
             h3.heading-tertirary
               span= name
 
@@ -19,19 +19,19 @@ block content
             p.card__text= summary 
             .card__data
               svg.card__icon
-                use(xlink:href='img/icons.svg#icon-map-pin')
+                use(xlink:href='/img/icons.svg#icon-map-pin')
               span= startLocation.description
             .card__data
               svg.card__icon
-                use(xlink:href='img/icons.svg#icon-calendar')
+                use(xlink:href='/img/icons.svg#icon-calendar')
               span= startDates[0].toLocaleString('en-us', {month: 'long', year: 'numeric'})
             .card__data
               svg.card__icon
-                use(xlink:href='img/icons.svg#icon-flag')
+                use(xlink:href='/img/icons.svg#icon-flag')
               span= `${location.length} stops`
             .card__data
               svg.card__icon
-                use(xlink:href='img/icons.svg#icon-user')
+                use(xlink:href='/img/icons.svg#icon-user')
               span= `${maxGroupSize} people`
 
           .card__footer
@@ -43,4 +43,4 @@ block content
               span.card__footer-value= ratingAverage
               | 
               span.card__footer-text= `rating (${ratingQuantity})` 
-            a.btn.btn--green.btn--small(href=`/tours/${slug}`) Details
+            a.btn.btn--green.btn--small(href=`/tour/${slug}`) Details
