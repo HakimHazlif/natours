@@ -1,5 +1,10 @@
 extends base
 include _reviewCard
+
+block append head
+  //- link( rel='stylesheet' href='/css/leaflet.css')
+  //- script( src='/js/leaflet.js')
+
    
 mixin overviewBox(label, text, icon)
   .overview-box__detail
@@ -71,7 +76,7 @@ block content
 
 
   section.section-map
-    #map
+    #map(data-locations=`${JSON.stringify(location.length ? location : [startLocation])}`)
 
   section.section-reviews
     .reviews

@@ -1,15 +1,16 @@
 doctype html
 html
   head
-    meta(charset='UTF-8')
-    meta(name='viewport' content='width=device-width, initial-scale=1.0')
-    //- it's important use only the single quote '...'
+    block head 
+      meta(charset='UTF-8')
+      meta(name='viewport' content='width=device-width, initial-scale=1.0')
+      //- it's important use only the single quote '...'
 
-    title Natours | #{title}
+      title Natours | #{title}
 
-    link(rel='stylesheet' href='/css/style.css')
-    link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
-    link(href='https://fonts.googleapis.com/css?family=Lato:300,300i,700' rel='stylesheet')
+      link(rel='stylesheet' href='/css/style.css')
+      link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
+      link(href='https://fonts.googleapis.com/css?family=Lato:300,300i,700' rel='stylesheet')
   body
     include _header
     
@@ -17,3 +18,5 @@ html
       h1 This is a placeholder heading
     
     include _footer
+
+    //- script(src='/js/mapbox.js')
