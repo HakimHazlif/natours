@@ -90,3 +90,12 @@ exports.getLoginForm = (req, res) => {
       title: 'log into your account',
     });
 };
+
+exports.getAccount = (req, res) => {
+  res
+    .status(200)
+    .set('Content-Security-Policy', getCSPHeader())
+    .render('account', {
+      title: 'Your account',
+    });
+};
