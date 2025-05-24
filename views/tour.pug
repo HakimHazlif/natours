@@ -2,8 +2,9 @@ extends base
 include _reviewCard
 
 block append head
-  //- link( rel='stylesheet' href='/css/leaflet.css')
-  //- script( src='/js/leaflet.js')
+  script( src='https://cdn.maptiler.com/maptiler-sdk-js/v3.2.0/maptiler-sdk.umd.min.js')
+  link( href='https://cdn.maptiler.com/maptiler-sdk-js/v3.2.0/maptiler-sdk.css' rel='stylesheet')
+
 
    
 mixin overviewBox(label, text, icon)

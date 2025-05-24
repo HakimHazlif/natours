@@ -1,22 +1,69 @@
 /* eslint-disable */
 
-// const { contains } = require('validator');
+import '@maptiler/sdk/dist/maptiler-sdk.css';
+import * as maptilersdk from '@maptiler/sdk';
 
-// const locations = JSON.parse(document.getElementById('map').dataset.locations);
+export const displayMap = (locations) => {
+  maptilersdk.config.apiKey = '';
 
-// console.log(locations);
+  const map = new maptilersdk.Map({
+    container: 'map',
+    style: maptilersdk.MapStyle.STREETS,
+    scrollZoom: false,
+  });
 
-// delete L.Icon.Default.prototype._getIconUrl;
+  const bounds = new maptilersdk.LngLatBounds();
 
-// L.Icon.Default.mergeOptions({
-//   iconUrl: '/img/leaflet/marker-icon.png',
-//   shadowUrl: '/img/leaflet/marker-shadow.png',
-// });
+  locations.forEach((loc) => {
+    const el = document.createElement('div');
+    el.className = 'marker';
 
-// const map = L.map('map').setView([33.5731, -7.5898], 12);
+    new maptilersdk.Marker({ element: el })
+      .setLngLat(loc.coordinates)
+      .addTo(map);
 
-// L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//   attribution: '&copy; OpenStreetMap contributors',
-// }).addTo(map);
+    new maptilersdk.Popup({
+      offset: 30,
+    })
+      .setLngLat(loc.coordinates)
+      .setHTML(`<p>Day ${loc.day}: ${loc.description}</p>`)
+      .addTo(map);
 
-// L.marker([33.5731, -7.5898]).addTo(map).bindPopup('Casablanca').openPopup();
+    bounds.extend(loc.coordinates);
+  });
+
+  // map.fitBounds(bounds, {
+  //   padding: {
+  //     top: 200,
+  //     bottom: 150,
+  //     left: 100,
+  //     right: 100,
+  //   },
+  //   minZoom: 8,
+  //   maxZoom: 14,
+  // });
+
+  map.on('load', () => {
+    if (locations.length > 0) {
+      map.fitBounds(bounds, {
+        padding: {
+          top: 200,
+          bottom: 150,
+          left: 100,
+          right: 100,
+        },
+        minZoom: 1,
+        maxZoom: 5,
+      });
+    } else {
+      map.fitBounds(bounds, {
+        padding: {
+          top: 200,
+          bottom: 150,
+          left: 100,
+          right: 100,
+        },
+      });
+    }
+  });
+};
