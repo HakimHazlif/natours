@@ -1,4 +1,5 @@
 const express = require('express');
+const multer = require('multer');
 const {
   getAllUsers,
   getUser,
@@ -8,6 +9,7 @@ const {
   updateUser,
   createUser,
   getMe,
+  uploadUserPhoto,
 } = require('./../controllers/userController');
 const {
   signup,
@@ -35,7 +37,7 @@ router.use(protect); // use protect middleware for all the middlewares that come
 router.patch('/updateMyPassword', updatePassword);
 
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', updateMe);
+router.patch('/updateMe', uploadUserPhoto, updateMe); 
 router.delete('/deleteMe', deleteMe);
 
 router.use(restrictTo('admin'));
