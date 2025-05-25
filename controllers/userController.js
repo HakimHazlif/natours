@@ -31,19 +31,19 @@ const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 exports.uploadUserPhoto = upload.single('photo');
 // upload.single('photo') middleware put the file or info about file on the request object into updateMe controller || 'photo' is the name of field from API body
 
-exports.resizeUserPhoto = (req, res, next) => {
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
   req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-  sharp(req.file.buffer)
+  await sharp(req.file.buffer)
     .resize(500, 500) // resize image 500x500px
     .toFormat('jpeg')
     .jpeg({ quality: 90 }) // and quality 90%
     .toFile(`public/img/users/${req.file.filename}`);
 
   next();
-};
+});
 
 // pervent update some fields shuch as role or id etc.
 const filterObj = (obj, ...allowedFields) => {
