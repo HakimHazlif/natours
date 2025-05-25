@@ -9,6 +9,7 @@ const {
   updateUser,
   createUser,
   getMe,
+  uploadUserPhoto,
 } = require('./../controllers/userController');
 const {
   signup,
@@ -21,8 +22,6 @@ const {
   restrictTo,
 } = require('./../controllers/authController');
 const { validIdParam } = require('../controllers/handlerFactory');
-
-const upload = multer({ dest: 'public/img/users' }); // dest: destination.. where will upload users' images
 
 const router = express.Router();
 
@@ -38,7 +37,7 @@ router.use(protect); // use protect middleware for all the middlewares that come
 router.patch('/updateMyPassword', updatePassword);
 
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', upload.single('photo'), updateMe); // upload.single('photo') middleware put the file or info about file on the request object into updateMe controller
+router.patch('/updateMe', uploadUserPhoto, updateMe); 
 router.delete('/deleteMe', deleteMe);
 
 router.use(restrictTo('admin'));
