@@ -11,12 +11,15 @@ const getCSPHeader = () => {
       "'self'",
       'https://cdn.maptiler.com',
       'https://cdnjs.cloudflare.com',
+      'https://js.stripe.com',
+      'https://js.stripe.com/v3',
     ],
     'connect-src': [
       "'self'",
       'https://cdn.maptiler.com',
       'https://api.maptiler.com',
       'https://cdnjs.cloudflare.com',
+      'https://api.stripe.com',
     ],
     'worker-src': ["'self'"],
     'style-src': [
@@ -31,8 +34,14 @@ const getCSPHeader = () => {
       'https:',
       'https://cdn.maptiler.com',
       'https://api.maptiler.com',
+      'https://*.stripe.com',
     ],
     'font-src': ["'self'", 'https:', 'data:', 'https://fonts.gstatic.com'],
+    'frame-src': [
+      "'self'",
+      'https://js.stripe.com',
+      'https://hooks.stripe.com',
+    ],
   };
 
   // In development, allow Parcel's hot reload
