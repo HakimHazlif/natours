@@ -20,8 +20,10 @@ const getCSPHeader = () => {
       'https://api.maptiler.com',
       'https://cdnjs.cloudflare.com',
       'https://api.stripe.com',
+      'ws://localhost:*',
+      'http://localhost:*',
     ],
-    'worker-src': ["'self'"],
+    'worker-src': ["'self'", 'blob:'],
     'style-src': [
       "'self'",
       "'unsafe-inline'",
