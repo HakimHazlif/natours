@@ -13,6 +13,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
@@ -85,6 +86,7 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter); // specify a middleware for a route.. this process is called Mounting the router
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 // if user enter a wrong route. should put this middleware her after routes
 app.all('*', (req, res, next) => {
