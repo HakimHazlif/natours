@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Review = require('../models/reviewModel');
+const Booking = require('../models/bookingModel');
 const {
   deleteOne,
   updateOne,
@@ -8,6 +9,7 @@ const {
   getAll,
 } = require('./handlerFactory');
 const AppError = require('../utils/appError');
+const catchAsync = require('../utils/catchAsync');
 // const catchAsync = require('../utils/catchAsync');
 
 exports.setTourUserIds = (req, res, next) => {
@@ -21,6 +23,18 @@ exports.setTourUserIds = (req, res, next) => {
 
   next();
 };
+
+exports.restrictReviewToBookedTour = catchAsync(async (req, res, next) => {
+  const bookedTour = await Booking.findOne({
+    tour: req.body.tour,
+    user: req.body.user,
+  });
+
+  if (!bookedTour)
+    return next(new AppError('You cannot review an unbooked tour', 403));
+
+  next();
+});
 
 exports.getAllReviews = getAll(Review);
 exports.getReview = getOne(Review);
