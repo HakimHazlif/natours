@@ -22,6 +22,7 @@ const {
   restrictTo,
 } = require('./../controllers/authController');
 const { validIdParam } = require('../controllers/handlerFactory');
+const bookingRouter = require('./bookingRoutes');
 
 const router = express.Router();
 
@@ -49,5 +50,7 @@ router
   .get(validIdParam, getUser)
   .patch(validIdParam, updateUser)
   .delete(validIdParam, deleteUser);
+
+router.use('/:userId/bookings', bookingRouter);
 
 module.exports = router;

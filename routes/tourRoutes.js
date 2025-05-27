@@ -15,6 +15,7 @@ const {
 } = require('../controllers/tourController');
 const { protect, restrictTo } = require('./../controllers/authController');
 const reviewRouter = require('./reviewRoutes');
+const bookingRouter = require('./bookingRoutes');
 const { validIdParam } = require('../controllers/handlerFactory');
 
 const router = express.Router();
@@ -57,6 +58,7 @@ router
 //   .route('/:tourId/reviews')
 //   .post(protect, restrictTo('user'), createReview); // instead of this we use middleware below
 router.use('/:tourId/reviews', reviewRouter); // merge routes
+router.use('/:tourId/bookings', bookingRouter); // merge routes
 
 module.exports = router;
 

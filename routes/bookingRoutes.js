@@ -8,9 +8,9 @@ const {
   deleteBooking,
 } = require('../controllers/bookingController');
 const { protect, restrictTo } = require('../controllers/authController');
-const { validIdParam } = require('../controllers/handlerFactory');
+// const { validIdParam } = require('../controllers/handlerFactory');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use(protect);
 
