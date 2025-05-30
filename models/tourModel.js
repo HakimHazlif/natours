@@ -78,7 +78,22 @@ const tourSchema = new mongoose.Schema(
       default: Date.now(),
       select: false,
     },
-    startDates: [Date],
+    startDates: [
+      {
+        date: {
+          type: Date,
+          require: [true, 'Tour must has at least one start date'],
+        },
+        participants: {
+          type: Number,
+          default: 0,
+        },
+        soldOut: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
     secretTour: {
       type: Boolean,
     },
@@ -132,6 +147,14 @@ tourSchema.virtual('reviews', {
   ref: 'Review', // from Review Model
   foreignField: 'tour', // field from Review Model
   localField: '_id', // field from this model that comparing to foreignField
+});
+
+tourSchema.pre('save', async function (next) {
+  this.startDates.forEach((date) => {
+    if (date.participants >= this.maxGroupSize) date.soldOut = true;
+  });
+
+  next();
 });
 
 // DOCUMENT MIDDLEWARE: runs before .save() and .create()

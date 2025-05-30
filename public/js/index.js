@@ -3,6 +3,8 @@ import '@babel/polyfill';
 import { login, logout } from './login';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
+import { selectBookingDate } from './booking';
+import { showAlert } from './alert';
 // import { displayMap } from './mapbox';
 
 // const mapBox = document.getElementById('map');
@@ -10,6 +12,7 @@ const loginForm = document.querySelector('.form--login');
 const logoutForm = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const popupButton = document.getElementById('open-booking');
 const bookBtn = document.getElementById('book-tour');
 
 // this worked well but I didn't know how to protect my mapTiler token
@@ -63,12 +66,33 @@ if (userPasswordForm)
     document.getElementById('password-confirm').value = '';
   });
 
+if (popupButton) {
+  const bookingPopup = document.getElementById('popup-overlay');
+  const popupContainer = document.querySelector('.popup-container');
+
+  popupButton.addEventListener('click', () => {
+    bookingPopup.classList.remove('hidden');
+    bookingPopup.classList.add('popup-overlay');
+  });
+
+  bookingPopup.addEventListener('mousedown', (e) => {
+    if (!popupContainer.contains(e.target)) {
+      bookingPopup.classList.add('hidden');
+      bookingPopup.classList.remove('popup-overlay');
+    }
+  });
+
+  selectBookingDate();
+}
+
 if (bookBtn) {
   bookBtn.addEventListener('click', async (e) => {
-    e.target.textContent = 'Processing...';
-    const { tourId } = e.target.dataset;
+    const { tourId, bookingDate } = e.target.dataset;
 
-    await bookTour(tourId);
-    e.target.textContent = 'Book tour now!';
+    if (!bookingDate)
+      return showAlert('error', "You didn't select a start date");
+
+    e.target.textContent = 'Processing...';
+    await bookTour(tourId, bookingDate);
   });
 }

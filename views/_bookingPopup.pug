@@ -1,0 +1,24 @@
+.hidden#popup-overlay
+  .popup-container
+    .tour-info
+      h2.tour-info__title= `${name} Tour`
+      h3.tour-info__price= `$${price}`
+      h3.tour-info__meta= `${difficulty} - ${duration} days`
+    
+    - const isSoldOut = startDates.every(date => date.soldOut === true);
+
+    if isSoldOut
+      .tour-message
+        p.tour-message__text Sorry, all available dates for this tour are fully booked.
+        p.tour-message__subtext Please check back later or explore other tours.
+
+      .tour-booking    
+        a.btn.btn--green.span-all-rows(href='/') Explore more tours!
+    else
+      .tour-dates
+        h3.tour-dates__title Please select a date for your tour:
+        .tour-dates__list
+          each startDate in startDates
+            button.date-button.date-button-js(class=`${startDate.soldOut ? 'date-soldOut' : ''}` disabled= startDate.soldOut ? true : undefined data-start-date=`${startDate.date}`)= startDate.date.toLocaleString('en-us', {month: 'long', year: 'numeric', day: 'numeric'})
+      .tour-booking    
+        button.btn.btn--green.span-all-rows#book-tour(data-tour-id=`${tour.id}` data-booking-date='') Book tour now!

@@ -43,6 +43,11 @@ body {
   flex-direction: column;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;  
+}
+
 .main {
   background-color: #f7f7f7;
   padding: 8rem 6rem;
@@ -1323,4 +1328,120 @@ body {
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.15);
   -webkit-transform: translateY(-2px);
   transform: translateY(-2px);
+}
+
+
+
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.hidden {
+  display: none;
+}
+.popup-container {
+  background-color: #fff;
+  padding: 3rem 5rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.tour-info {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.tour-info__title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.tour-info__price {
+  color: #28b487;
+  font-size: 2.5rem;
+  margin-bottom: 0.25rem;
+}
+.tour-info__meta {
+  font-size: 2rem;
+  color: #777;
+}
+.tour-message {
+  text-align: center;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.tour-message__text {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #d84315;
+  margin-bottom: 0.5rem;
+}
+.tour-message__subtext {
+  font-size: 1.5rem;
+  color: #555;
+}
+.tour-dates {
+  margin-bottom: 4rem;
+}
+.tour-dates__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.tour-dates__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.date-button {
+  color: #3e3e3e;
+  font-weight: 500;
+  font-size: 1.5rem;
+  padding: 1rem;
+  background-color: #67e290;
+  border: 1px solid #64da52;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.date-button:hover:not(:disabled) {
+  color: white;
+  background-color: #25a77e;
+}
+.date-button:disabled {
+  background-color: #eee;
+  color: #999;
+  cursor: not-allowed;
+  border: 1px solid #999;
+}
+.selected-date {
+  color: white;
+  font-weight: 600;
+  border: 2px solid #178562;
+  background-color: #1d946f;
+}
+.date-soldOut {
+  text-decoration: line-through;
+  font-style: italic;
+}
+.tour-booking  {
+  display: grid;
+  place-items: center;
 }

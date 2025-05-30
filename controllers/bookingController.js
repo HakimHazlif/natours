@@ -9,8 +9,12 @@ const {
   deleteOne,
   getAll,
 } = require('./handlerFactory');
+const AppError = require('../utils/appError');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
+  if (!req.params.startDate)
+    return next(new AppError('Booking must has start date', 404));
+
   // 1. get the currently booked tour
   const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
   const tour = await Tour.findById(req.params.tourID);
@@ -19,7 +23,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     mode: 'payment',
-    success_url: `${req.protocol}://${req.get('host')}/?tour=${req.params.tourID}&user=${req.user.id}&price=${tour.price}`, // it's not secure at all, but we will redirect it after using params
+    success_url: `${req.protocol}://${req.get('host')}/?tour=${req.params.tourID}&user=${req.user.id}&price=${tour.price}&startDate=${req.params.startDate}`, // it's not secure at all, but we will redirect it after using params
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourID,
@@ -48,11 +52,34 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 
 exports.createBookingCheckout = catchAsync(async (req, res, next) => {
   // this is only Temprorary, because it's unsecure everyone cane ,ake bookings without paying
-  const { tour, user, price } = req.query;
+  const { tour, user, price, startDate } = req.query;
 
-  if (!tour || !user || !price) return next();
+  if (!tour || !user || !price || !startDate) return next();
 
-  await Booking.create({ tour, user, price });
+  const targetTour = await Tour.findById(tour);
+  if (!targetTour) {
+    return next(new AppError('Tour not found', 404));
+  }
+
+  const queryDate = new Date(startDate);
+
+  const dateObj = targetTour.startDates.find((d) => {
+    const dbDate = d.date.toISOString().split('T')[0];
+    const queryDateStr = queryDate.toISOString().split('T')[0];
+    return dbDate === queryDateStr;
+  });
+
+  if (!dateObj) {
+    // return next();
+    return next(new AppError('Start date not found', 404));
+  }
+
+  dateObj.participants += 1;
+  if (dateObj.participants >= targetTour.maxGroupSize) dateObj.soldOut = true;
+
+  await targetTour.save();
+
+  await Booking.create({ tour, user, price, startDate });
 
   res.redirect(req.originalUrl.split('?')[0]); // remove all params (query strings) for not show up on browser
 });
