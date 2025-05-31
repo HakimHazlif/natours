@@ -7,30 +7,37 @@ const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
 const Email = require('./../utils/email');
 
-const signToken = (id) =>
+const signAccessToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
+const signRefreshToken = (id) =>
+  jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, {
+    expiresIn: `${process.env.JWT_COOKIE_EXPIRES_IN}d`,
+  });
+
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user._id);
+  const accessToken = signAccessToken(user._id);
+  const refreshToken = signRefreshToken(user._id);
 
   const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
-    ),
     httpOnly: true,
+    expires: new Date(
+      Date.now() +
+        Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000,
+    ),
   };
 
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
-  res.cookie('jwt', token, cookieOptions);
+  res.cookie('jwt', refreshToken, cookieOptions);
 
   user.password = undefined;
 
   res.status(statusCode).json({
     status: 'success',
-    token,
+    accessToken,
     data: {
       user,
     },
@@ -41,7 +48,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create(req.body);
   // if we need to add a new administrator to our systme we can then simply just create a new user normally. and then go into MongoDB compass, and basically edit that role in there, to admin the user manually
 
-  const token = signToken(newUser._id);
+  const token = signAccessToken(newUser._id);
 
   const confirmationLink = `${req.protocol}://${req.get('host')}/api/v1/users/confirm-email/${token}`;
 
@@ -91,6 +98,24 @@ exports.login = catchAsync(async (req, res, next) => {
   // if everthing ok, send token to client
   createSendToken(user, 200, res);
 });
+
+exports.refreshAccessToken = (req, res) => {
+  const token = req.cookies.jwt;
+
+  if (!token) return res.status(401).json({ message: 'Refresh token missing' });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+
+    const newAccessToken = signAccessToken(decoded.id);
+
+    res.status(200).json({
+      accessToken: newAccessToken,
+    });
+  } catch (err) {
+    res.status(403).json({ message: 'Invalid or expired refresh token' });
+  }
+};
 
 exports.logout = (req, res) => {
   res.cookie('jwt', 'loggedout', {

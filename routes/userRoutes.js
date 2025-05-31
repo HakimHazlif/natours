@@ -15,6 +15,7 @@ const {
   signup,
   confirmEmail,
   login,
+  refreshAccessToken,
   logout,
   forgotPassword,
   resetPassword,
@@ -31,6 +32,8 @@ router.post('/signup', signup);
 router.get('/confirm-email/:token', confirmEmail);
 router.post('/login', login);
 router.get('/logout', logout);
+
+router.post('/refresh-token', refreshAccessToken);
 
 router.post('/forgotPassword', forgotPassword);
 router.patch('/resetPassword/:token', resetPassword);
