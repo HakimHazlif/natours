@@ -40,11 +40,37 @@ const createSendToken = (user, statusCode, res) => {
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create(req.body);
   // if we need to add a new administrator to our systme we can then simply just create a new user normally. and then go into MongoDB compass, and basically edit that role in there, to admin the user manually
-  const url = `${req.protocol}://${req.get('host')}/me`;
-  console.log(url);
-  await new Email(newUser, url).sendWelcom();
 
-  createSendToken(newUser, 201, res);
+  const token = signToken(newUser._id);
+
+  const confirmationLink = `${req.protocol}://${req.get('host')}/api/v1/users/confirm-email/${token}`;
+
+  await new Email(newUser, confirmationLink).sendConfirmSignup();
+
+  res
+    .status(200)
+    .json({ message: 'Check your email to confirm your account.' });
+});
+
+exports.confirmEmail = catchAsync(async (req, res, next) => {
+  const { token } = req.params;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) return next(new AppError('User not found.', 404));
+
+    user.isVerified = true;
+    await user.save({ validateBeforeSave: false });
+
+    const url = `${req.protocol}://${req.get('host')}/me`;
+    await new Email(user, url).sendWelcome();
+
+    createSendToken(user, 201, res);
+  } catch (err) {
+    res.status(400).json({ message: 'Invalid or expired token.' });
+  }
 });
 
 exports.login = catchAsync(async (req, res, next) => {

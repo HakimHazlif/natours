@@ -13,6 +13,7 @@ const {
 } = require('./../controllers/userController');
 const {
   signup,
+  confirmEmail,
   login,
   logout,
   forgotPassword,
@@ -27,6 +28,7 @@ const bookingRouter = require('./bookingRoutes');
 const router = express.Router();
 
 router.post('/signup', signup);
+router.get('/confirm-email/:token', confirmEmail);
 router.post('/login', login);
 router.get('/logout', logout);
 
