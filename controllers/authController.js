@@ -17,7 +17,7 @@ const signRefreshToken = (id) =>
     expiresIn: `${process.env.JWT_COOKIE_EXPIRES_IN}d`,
   });
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, res, sendResponse = true) => {
   const accessToken = signAccessToken(user._id);
   const refreshToken = signRefreshToken(user._id);
 
@@ -35,13 +35,14 @@ const createSendToken = (user, statusCode, res) => {
 
   user.password = undefined;
 
-  res.status(statusCode).json({
-    status: 'success',
-    accessToken,
-    data: {
-      user,
-    },
-  });
+  if (sendResponse)
+    res.status(statusCode).json({
+      status: 'success',
+      accessToken,
+      data: {
+        user,
+      },
+    });
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
@@ -50,16 +51,17 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   const token = signAccessToken(newUser._id);
 
-  const confirmationLink = `${req.protocol}://${req.get('host')}/api/v1/users/confirm-email/${token}`;
+  const confirmationLink = `${req.protocol}://${req.get('host')}/confirm-email/${token}`;
 
   await new Email(newUser, confirmationLink).sendConfirmSignup();
 
-  res
-    .status(200)
-    .json({ message: 'Check your email to confirm your account.' });
+  res.status(200).json({
+    status: 'success',
+    message: 'Check your email to confirm your account.',
+  });
 });
 
-exports.confirmEmail = catchAsync(async (req, res, next) => {
+exports.verifyEmailToken = catchAsync(async (req, res, next) => {
   const { token } = req.params;
 
   try {
@@ -74,9 +76,14 @@ exports.confirmEmail = catchAsync(async (req, res, next) => {
     const url = `${req.protocol}://${req.get('host')}/me`;
     await new Email(user, url).sendWelcome();
 
-    createSendToken(user, 201, res);
+    createSendToken(user, 200, res, false);
+
+    res.user = user;
+    next();
   } catch (err) {
-    res.status(400).json({ message: 'Invalid or expired token.' });
+    res.status = 'fail';
+    res.message = 'Invalid or expired token.';
+    next();
   }
 });
 

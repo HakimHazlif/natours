@@ -1,6 +1,7 @@
 /* eslint-disable */
 import '@babel/polyfill';
 import { login, logout } from './login';
+import { signup, startCountdownRedirect } from './signup';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { selectBookingDate } from './booking';
@@ -9,11 +10,13 @@ import { showAlert } from './alert';
 
 // const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
+const signupForm = document.querySelector('.form--signup');
 const logoutForm = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 const popupButton = document.getElementById('open-booking');
 const bookBtn = document.getElementById('book-tour');
+const confirmEmailSuccess = document.getElementById('redirect-countdown');
 
 // this worked well but I didn't know how to protect my mapTiler token
 // if (mapBox) {
@@ -30,6 +33,20 @@ if (loginForm)
 
     login(email, password);
   });
+
+if (signupForm)
+  signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const name = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+    signup({ name, email, password, passwordConfirm });
+  });
+
+if (confirmEmailSuccess) startCountdownRedirect('/', 5);
 
 if (logoutForm) logoutForm.addEventListener('click', logout);
 

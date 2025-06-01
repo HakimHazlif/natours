@@ -1,0 +1,19 @@
+extends base
+
+block content 
+  main.main
+    .container
+      .email-icon
+        | 📧  
+      .message-details
+        h1.tour-info__title= title     
+        .subtitle The confirmation link has been sent     
+        .message
+          p We have sent an email confirmation link to your registered address
+          p Please open your email and click on the link to confirm your account
+      
+      .info-box
+        h3 ℹ️ The validity of the link is limited for 15 minutes
+      .actions
+        a.nav__el(href='/login') Log in
+        a.nav__el.nav__el--cta(href='/signup') Sign up

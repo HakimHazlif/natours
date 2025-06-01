@@ -1228,7 +1228,7 @@ a {
   margin: 0 auto;
 }
 
-.login-form {
+.login-form, .signup-form {
   margin: 0 auto;
   max-width: 55rem;
   background-color: #fff;
@@ -1444,4 +1444,96 @@ a {
 .tour-booking  {
   display: grid;
   place-items: center;
+}
+
+.email-icon {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #67e290, #64da52);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 30px;
+  font-size: 50px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(103, 226, 144, 0.4);
+}
+.message-details {
+  text-align: center;
+}
+.subtitle {
+  color: #20bf6b;
+  font-size: 18px;
+  margin-bottom: 30px;
+  font-weight: 600;
+}
+.message {
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  font-size: 16px;
+}
+.email-display {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin: 20px 0;
+  border-right: 4px solid #25a77e;
+  color: #178562;
+  font-weight: 600;
+}
+.info-box {
+  margin: 10px 0;
+  width: 50%;
+}
+.info-box h3 {
+  background: linear-gradient(135deg, #67e290, #64da52);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 30px 0;
+  color: white;
+}
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 30px;
+}
+.user-info h3 {
+  color: #1d946f;
+  margin-bottom: 10px;
+}
+.user-info p {
+  font-weight: bold;
+  color: #178562;
+}
+.countdown-redirect {
+  margin-top: 20px;
+  color: #1d946f;
+  font-size: 18px;
+}
+.countdown-number {
+  font-weight: bold;
+  font-size: 18px;
+  color: #64da52;
+  margin: 0 5px;
+}
+.help-text {
+  margin-top: 30px;
+  text-align: right;
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+}
+.help-text h4 {
+  margin-bottom: 10px;
+  color: #d9534f;
+}
+.help-text p {
+  margin: 5px 0;
+  color: #555;
+}
+.centerElements {
+  text-align: center;
 }

@@ -104,6 +104,44 @@ exports.getLoginForm = (req, res) => {
     });
 };
 
+exports.getSignupForm = (req, res) => {
+  res
+    .status(200)
+    .set('Content-Security-Policy', getCSPHeader())
+    .render('signup', {
+      title: 'create your account',
+    });
+};
+
+exports.checkConfirmEmail = (req, res) => {
+  res
+    .status(200)
+    .set('Content-Security-Policy', getCSPHeader())
+    .render('checkEmail', {
+      title: 'Check your email box',
+    });
+};
+
+exports.getConfirmedEmail = (req, res) => {
+  console.log('hi from getConfirmedEmail');
+  if (res.status === 'fail')
+    res
+      .status(400)
+      .set('Content-Security-Policy', getCSPHeader())
+      .render('emailConfirmation', {
+        title: 'Confirmation failed',
+        message: res.message,
+      });
+
+  res
+    .status(200)
+    .set('Content-Security-Policy', getCSPHeader())
+    .render('emailConfirmation', {
+      title: 'Confirmation succeeded',
+      user: res.user,
+    });
+};
+
 exports.getAccount = (req, res) => {
   res
     .status(200)

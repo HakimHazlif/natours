@@ -1,0 +1,28 @@
+extends base
+
+block content
+  main.main 
+    .container
+      .email-icon ✅
+      .centerElements
+        h1.tour-info__title= title
+
+        if user
+          .user-info
+            .subtitle 
+              p Welcome! 
+                span= user.name || user.email
+
+          .countdown-redirect#redirect-countdown
+            | You will be directed to the overview page through
+            span.countdown-number#countdown-number 5 seconds
+
+        if message
+          .message
+            p= message
+
+          .help-text
+            h4 💡 Tips for help
+            p Ensure that the link is true and its validity has not ended
+            p Check the new messages in your email
+            p Contact us if the error continues
