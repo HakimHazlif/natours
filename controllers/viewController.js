@@ -141,7 +141,6 @@ exports.checkConfirmEmail = (req, res) => {
 };
 
 exports.getConfirmedEmail = (req, res) => {
-  console.log('hi from getConfirmedEmail');
   if (res.status === 'fail')
     res
       .status(400)

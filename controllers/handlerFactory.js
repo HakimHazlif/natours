@@ -16,7 +16,6 @@ exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     // to allow for nested GET reviews on tour
     let filter = {};
-    console.log(req.params);
     if (req.params.tourId) filter = { tour: req.params.tourId };
     if (req.params.userId) filter = { user: req.params.userId };
 

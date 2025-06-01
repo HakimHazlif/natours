@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const app = require('./app');
 
 process.on('uncaughtException', (err) => {
-  console.log('Uncaught Exception! Shutting down...');
+  console.log('Uncaught Exception! 💥 Shutting down...');
   console.log(err.name, err.message);
   process.exit(1); // 0 stands for a success and 1 stands for uncaught exception.
 });
@@ -35,7 +35,7 @@ const server = app.listen(port, () => {
 });
 
 process.on('unhandledRejection', (err) => {
-  console.log('Unhandled Rejection! Shutting down...');
+  console.log('Unhandled Rejection! 💥 Shutting down...');
   console.log(err.name, err.message);
   server.close(() => {
     process.exit(1); // 0 stands for a success and 1 stands for uncaught exception.

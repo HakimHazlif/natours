@@ -93,8 +93,6 @@ if (reviewForm)
     const rating = document.getElementById('rating').value;
     const { user, tour } = document.getElementById('btn-review').dataset;
 
-    console.log({ review, rating: Number(rating), user, tour });
-
     addReview({ review, rating: Number(rating), user, tour });
   });
 

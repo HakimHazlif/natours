@@ -13,11 +13,8 @@ const DB = process.env.DATABASE.replace(
 ); // should do replacement at config.env file but the teacher did that here
 
 mongoose
-  // .connect(process.env.DATABASE_LOCAL, {
   .connect(DB, {
     useNewUrlParser: true,
-    // useCreateIndex: true,
-    // useFindAndModify: false,
   })
   .then(() => {
     console.log('DB connection successful!');

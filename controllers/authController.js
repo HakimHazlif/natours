@@ -36,13 +36,6 @@ const createSendToken = (user, statusCode, res, sendResponse = true) => {
   user.password = undefined;
 
   if (sendResponse) {
-    console.log({
-      refreshToken,
-      accessToken,
-      data: {
-        user,
-      },
-    });
     res.status(statusCode).json({
       status: 'success',
       accessToken,

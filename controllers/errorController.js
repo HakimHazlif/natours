@@ -36,9 +36,7 @@ const sendErrorDev = (err, req, res) => {
     });
 
   // rendered website
-
-  console.log('ERROR', err);
-
+  console.error('ERROR 💥', err);
   return res.status(err.statusCode).render('error', {
     title: 'Something went wrong!',
     msg: err.message,
@@ -55,8 +53,7 @@ const sendErrorProd = (err, req, res) => {
       });
     }
 
-    console.log('ERROR', err);
-
+    console.error('ERROR 💥', err);
     return res.status(500).json({
       status: 'error',
       message: 'Something went very wrong!',
@@ -70,8 +67,6 @@ const sendErrorProd = (err, req, res) => {
       msg: err.message,
     });
   }
-
-  console.log('ERROR', err);
 
   return res.status(err.statusCode).render({
     title: 'Something went wrong!',

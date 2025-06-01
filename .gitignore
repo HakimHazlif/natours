@@ -3,10 +3,11 @@ dist/
 build/
 coverage/
 
-.cache
-.parcel-cache
+.cache/
+.parcel-cache/
 
 config.env
+*.env
 .env
 .env.local
 .env.development
