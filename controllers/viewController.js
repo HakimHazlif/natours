@@ -1,6 +1,7 @@
 const Booking = require('../models/bookingModel');
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
+const Review = require('../models/reviewModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -86,12 +87,29 @@ exports.getTour = catchAsync(async (req, res, next) => {
     return next(new AppError('There is no tour with that name', 404));
   }
 
+  let booking = null;
+  if (res.locals.user) {
+    booking = await Booking.findOne({
+      tour: tour._id,
+      user: res.locals.user._id,
+    });
+  }
+  let review = null;
+  if (res.locals.user) {
+    review = await Review.findOne({
+      tour: tour._id,
+      user: res.locals.user._id,
+    });
+  }
+
   res
     .status(200)
     .set('Content-Security-Policy', getCSPHeader())
     .render('tour', {
       title: `${tour.name} Tour`,
       tour,
+      isBooked: !!booking,
+      isReviewed: !!review,
     });
 });
 

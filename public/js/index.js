@@ -6,6 +6,7 @@ import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { selectBookingDate } from './booking';
 import { showAlert } from './alert';
+import { addReview } from './review';
 // import { displayMap } from './mapbox';
 
 // const mapBox = document.getElementById('map');
@@ -14,6 +15,7 @@ const signupForm = document.querySelector('.form--signup');
 const logoutForm = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const reviewForm = document.querySelector('.form--review');
 const popupButton = document.getElementById('open-booking');
 const bookBtn = document.getElementById('book-tour');
 const confirmEmailSuccess = document.getElementById('redirect-countdown');
@@ -81,6 +83,19 @@ if (userPasswordForm)
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';
+  });
+
+if (reviewForm)
+  reviewForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const review = document.getElementById('review').value;
+    const rating = document.getElementById('rating').value;
+    const { user, tour } = document.getElementById('btn-review').dataset;
+
+    console.log({ review, rating: Number(rating), user, tour });
+
+    addReview({ review, rating: Number(rating), user, tour });
   });
 
 if (popupButton) {

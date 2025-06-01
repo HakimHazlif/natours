@@ -1,0 +1,15 @@
+section.section-cta
+  .login-form
+    h2.heading-secondary.ma-bt-lg Write a Review
+    form.form.form--review
+      .form__group
+        label.form__label(for="review") Your Review
+        textarea#review.form__input(name="review" rows="5" required placeholder="Write your review here..." maxlength='200')
+      .form__group
+        label.form__label(for="rating") Rating:
+        select#rating.form__input(name="rating" required)
+          option(value="" disabled selected) -- Select a rating --
+          each val in [1,2,3,4,5]
+            option(value=val)= `${val} Star${val > 1 ? 's' : ''}`
+      .form__group
+        button.btn.btn--green#btn-review(data-user=`${user._id}` data-tour=`${tour._id}`) Submit Review
