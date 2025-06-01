@@ -35,7 +35,14 @@ const createSendToken = (user, statusCode, res, sendResponse = true) => {
 
   user.password = undefined;
 
-  if (sendResponse)
+  if (sendResponse) {
+    console.log({
+      refreshToken,
+      accessToken,
+      data: {
+        user,
+      },
+    });
     res.status(statusCode).json({
       status: 'success',
       accessToken,
@@ -43,6 +50,35 @@ const createSendToken = (user, statusCode, res, sendResponse = true) => {
         user,
       },
     });
+  }
+};
+
+exports.refreshAccessToken = async (req, res) => {
+  const token = req.cookies.jwt;
+
+  if (!token) return res.status(401).json({ message: 'Refresh token missing' });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+
+    const currentUser = await User.findById(decoded.id);
+
+    if (!currentUser) {
+      return res.status(401).json({
+        status: 'fail',
+        message: 'The user belonging to this token does no longer exist.',
+      });
+    }
+
+    const newAccessToken = signAccessToken(currentUser._id);
+
+    res.status(200).json({
+      status: 'success',
+      accessToken: newAccessToken,
+    });
+  } catch (err) {
+    res.status(403).json({ message: 'Invalid or expired refresh token' });
+  }
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
@@ -106,24 +142,6 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-exports.refreshAccessToken = (req, res) => {
-  const token = req.cookies.jwt;
-
-  if (!token) return res.status(401).json({ message: 'Refresh token missing' });
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-
-    const newAccessToken = signAccessToken(decoded.id);
-
-    res.status(200).json({
-      accessToken: newAccessToken,
-    });
-  } catch (err) {
-    res.status(403).json({ message: 'Invalid or expired refresh token' });
-  }
-};
-
 exports.logout = (req, res) => {
   res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 + 1000),
@@ -153,7 +171,10 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
 
   // 2) verification token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  const decoded = await promisify(jwt.verify)(
+    token,
+    process.env.JWT_REFRESH_SECRET,
+  );
   // console.log(decoded); // you will get {id: user id, iat: timestamp of the creation date, exp: timestamp of the expiation date}
 
   // 3) check if user still exists
@@ -186,7 +207,7 @@ exports.isLoggedIn = async (req, res, next) => {
       // 1. verify token
       const decoded = await promisify(jwt.verify)(
         req.cookies.jwt,
-        process.env.JWT_SECRET,
+        process.env.JWT_REFRESH_SECRET,
       );
       // console.log(decoded); // you will get {id: user id, iat: timestamp of the creation date, exp: timestamp of the expiation date}
 
