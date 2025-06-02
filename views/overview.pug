@@ -5,7 +5,7 @@ block content
     .card-container
 
       each tour in tours
-        - const { name, imageCover, difficulty, duration, summary, startLocation, startDates, location, maxGroupSize, price, ratingAverage, ratingQuantity, slug } = tour
+        - const { name, imageCover, difficulty, duration, summary, startLocation, startDates, locations, maxGroupSize, price, ratingAverage, ratingQuantity, slug } = tour
         .card
           .card__header
             .card__picture
@@ -28,7 +28,7 @@ block content
             .card__data
               svg.card__icon
                 use(xlink:href='/img/icons.svg#icon-flag')
-              span= `${location.length} stops`
+              span= `${locations.length} stops`
             .card__data
               svg.card__icon
                 use(xlink:href='/img/icons.svg#icon-user')

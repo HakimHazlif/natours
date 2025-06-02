@@ -16,7 +16,7 @@ mixin overviewBox(label, text, icon)
     span.overview-box__text= text
 
 block content
-  - const { name, imageCover, difficulty, duration, summary, startLocation, startDates, location, maxGroupSize, price, ratingAverage, ratingQuantity, slug, guides, description, images, reviews } = tour
+  - const { name, imageCover, difficulty, duration, summary, startLocation, startDates, locations, maxGroupSize, price, ratingAverage, ratingQuantity, slug, guides, description, images, reviews } = tour
 
   section.section-header
     .header__hero
@@ -78,7 +78,7 @@ block content
 
 
   section.section-map
-    #map(data-locations=`${JSON.stringify(location.length ? location : [startLocation])}`)
+    #map(data-locations=`${JSON.stringify(locations)}`)
 
   section.section-reviews
     .reviews

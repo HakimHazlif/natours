@@ -7,9 +7,9 @@ import { bookTour } from './stripe';
 import { selectBookingDate } from './booking';
 import { showAlert } from './alert';
 import { addReview } from './review';
-// import { displayMap } from './mapbox';
+import { displayMap } from './map';
 
-// const mapBox = document.getElementById('map');
+const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
 const signupForm = document.querySelector('.form--signup');
 const logoutForm = document.querySelector('.nav__el--logout');
@@ -20,11 +20,10 @@ const popupButton = document.getElementById('open-booking');
 const bookBtn = document.getElementById('book-tour');
 const confirmEmailSuccess = document.getElementById('redirect-countdown');
 
-// this worked well but I didn't know how to protect my mapTiler token
-// if (mapBox) {
-//   const locations = JSON.parse(mapBox.dataset.locations);
-//   displayMap(locations);
-// }
+if (mapBox) {
+  const locations = JSON.parse(mapBox.dataset.locations);
+  displayMap(locations);
+}
 
 if (loginForm)
   loginForm.addEventListener('submit', (e) => {

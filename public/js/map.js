@@ -1,10 +1,13 @@
 /* eslint-disable */
 
+import dotenv from 'dotenv';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 import * as maptilersdk from '@maptiler/sdk';
 
+dotenv.config({ path: './config.env' });
+
 export const displayMap = (locations) => {
-  maptilersdk.config.apiKey = '';
+  maptilersdk.config.apiKey = process.env.MAPTILER_TOKEN;
 
   const map = new maptilersdk.Map({
     container: 'map',
@@ -18,7 +21,7 @@ export const displayMap = (locations) => {
     const el = document.createElement('div');
     el.className = 'marker';
 
-    new maptilersdk.Marker({ element: el })
+    new maptilersdk.Marker({ element: el, anchor: 'bottom' })
       .setLngLat(loc.coordinates)
       .addTo(map);
 
@@ -32,17 +35,6 @@ export const displayMap = (locations) => {
     bounds.extend(loc.coordinates);
   });
 
-  // map.fitBounds(bounds, {
-  //   padding: {
-  //     top: 200,
-  //     bottom: 150,
-  //     left: 100,
-  //     right: 100,
-  //   },
-  //   minZoom: 8,
-  //   maxZoom: 14,
-  // });
-
   map.on('load', () => {
     if (locations.length > 0) {
       map.fitBounds(bounds, {
@@ -52,8 +44,8 @@ export const displayMap = (locations) => {
           left: 100,
           right: 100,
         },
-        minZoom: 1,
-        maxZoom: 5,
+        minZoom: 5,
+        maxZoom: 9,
       });
     } else {
       map.fitBounds(bounds, {
