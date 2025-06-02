@@ -14,12 +14,12 @@ module.exports = class Email {
     if (process.env.NODE_ENV === 'production') {
       // Sendgrid
       return nodemailer.createTransport({
-        host: 'smtp.sendgrid.net',
-        port: 587,
+        host: 'smtp-relay.brevo.com',
+        port: process.env.BREVO_HOST,
         secure: false,
         auth: {
-          user: 'apikey',
-          pass: process.env.SENDGRID_PASSWORD,
+          user: process.env.BREVO_USERNAME,
+          pass: process.env.BREVO_PASSWORD,
         },
       });
     }
