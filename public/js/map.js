@@ -1,13 +1,10 @@
 /* eslint-disable */
 
-import dotenv from 'dotenv';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 import * as maptilersdk from '@maptiler/sdk';
 
-dotenv.config({ path: './config.env' });
-
 export const displayMap = (locations) => {
-  maptilersdk.config.apiKey = process.env.MAPTILER_TOKEN;
+  maptilersdk.config.apiKey = 'zeYpMqgcTa20zTTj3vyr';
 
   const map = new maptilersdk.Map({
     container: 'map',
