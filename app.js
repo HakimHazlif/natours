@@ -1,6 +1,7 @@
 const path = require('path');
 const express = require('express');
-const morgan = require('morgan');
+// const morgan = require('morgan');
+const pinoHttp = require('pino-http');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -32,7 +33,18 @@ app.use(helmet());
 
 // development logging
 if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev')); // the 3rd-party middleware
+  const looger = pinoHttp({
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'SYS:standard',
+        ignore: 'pid,hostanme',
+      },
+    },
+  });
+
+  app.use(looger);
 }
 
 // Limit request from same API
