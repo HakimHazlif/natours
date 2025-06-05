@@ -5,10 +5,11 @@ const pinoHttp = require('pino-http');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
-const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -19,6 +20,9 @@ const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
+
+const { window } = new JSDOM('');
+const DOMPurify = createDOMPurify(window);
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views')); // set up templating engine
@@ -69,7 +73,25 @@ app.use(cookieParser());
 app.use(mongoSanitize());
 
 // Data sanitization against XSS
-app.use(xss());
+app.use((req, res, next) => {
+  const sanitize = (obj) => {
+    if (typeof obj !== 'object' || obj === null) return;
+
+    Object.entries(obj).forEach(([key, value]) => {
+      if (typeof value === 'string') {
+        obj[key] = DOMPurify.sanitize(value);
+      } else if (typeof value === 'object') {
+        sanitize(value);
+      }
+    });
+  };
+
+  if (req.body) sanitize(req.body);
+  if (req.query) sanitize(req.query);
+  if (req.params) sanitize(req.params);
+
+  next();
+});
 
 // Pervent parameter pollution
 // for ex: ?sort=duration&sort=price
