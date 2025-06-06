@@ -21,6 +21,8 @@ const viewRouter = require('./routes/viewRoutes');
 
 const app = express();
 
+app.enable('trust proxy');
+
 const { window } = new JSDOM('');
 const DOMPurify = createDOMPurify(window);
 

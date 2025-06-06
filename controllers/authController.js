@@ -17,21 +17,18 @@ const signRefreshToken = (id) =>
     expiresIn: `${process.env.JWT_COOKIE_EXPIRES_IN}d`,
   });
 
-const createSendToken = (user, statusCode, res, sendResponse = true) => {
+const createSendToken = (user, statusCode, req, res, sendResponse = true) => {
   const accessToken = signAccessToken(user._id);
   const refreshToken = signRefreshToken(user._id);
 
-  const cookieOptions = {
+  res.cookie('jwt', refreshToken, {
     httpOnly: true,
     expires: new Date(
       Date.now() +
         Number(process.env.JWT_COOKIE_EXPIRES_IN) * 24 * 60 * 60 * 1000,
     ),
-  };
-
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-
-  res.cookie('jwt', refreshToken, cookieOptions);
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https', // is HTTP secure or so-called HTTPS
+  });
 
   user.password = undefined;
 
@@ -105,7 +102,7 @@ exports.verifyEmailToken = catchAsync(async (req, res, next) => {
     const url = `${req.protocol}://${req.get('host')}/me`;
     await new Email(user, url).sendWelcome();
 
-    createSendToken(user, 200, res, false);
+    createSendToken(user, 200, req, res, false);
 
     res.user = user;
     next();
@@ -132,7 +129,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // if everthing ok, send token to client
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.logout = (req, res) => {
@@ -298,7 +295,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   // 3. Update changePasswordAt property for the user
 
   // 4. Log the user in, sent JWT
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -316,5 +313,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 4. Log user in, send JWT
-  createSendToken(user, 200, res);
+  createSendToken(user, 200, req, res);
 });
