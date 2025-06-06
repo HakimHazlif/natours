@@ -1,6 +1,5 @@
 const path = require('path');
 const express = require('express');
-// const morgan = require('morgan');
 const pinoHttp = require('pino-http');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
@@ -10,6 +9,7 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const createDOMPurify = require('dompurify');
 const { JSDOM } = require('jsdom');
+const cors = require('cors');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -30,6 +30,15 @@ app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views')); // set up templating engine
 
 // GLOBAL MIDDLEWARES
+// Implement CORS
+app.use(cors()); // Access-Control-Allow-Origin *
+// app.use(cors({
+//   origin: 'https://www.natours.com'
+// }))
+
+app.options('*', cors());
+// app.options('/api/v1/tours/:id', cors());
+
 // servering static files by middleware
 app.use(express.static(path.join(__dirname, 'public')));
 
