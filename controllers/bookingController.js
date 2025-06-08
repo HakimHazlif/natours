@@ -36,7 +36,6 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
           currency: 'usd',
           product_data: {
             name: `${tour.name} Tour`,
-            start_date: req.params.startDate,
             description: tour.summary,
             images: [`https://www.natours.dev/img/tours/${tour.imageCover}`],
           },
@@ -45,6 +44,9 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
         quantity: 1,
       },
     ],
+    metadata: {
+      start_date: req.params.startDate,
+    },
   });
 
   // 3. create session as response
@@ -54,45 +56,11 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-// exports.createBookingCheckout = catchAsync(async (req, res, next) => {
-//   // this is only Temprorary, because it's unsecure everyone cane ,ake bookings without paying
-//   const { tour, user, price, startDate } = req.query;
-
-//   if (!tour || !user || !price || !startDate) return next();
-
-//   const targetTour = await Tour.findById(tour);
-//   if (!targetTour) {
-//     return next(new AppError('Tour not found', 404));
-//   }
-
-//   const queryDate = new Date(startDate);
-
-//   const dateObj = targetTour.startDates.find((d) => {
-//     const dbDate = d.date.toISOString().split('T')[0];
-//     const queryDateStr = queryDate.toISOString().split('T')[0];
-//     return dbDate === queryDateStr;
-//   });
-
-//   if (!dateObj) {
-//     // return next();
-//     return next(new AppError('Start date not found', 404));
-//   }
-
-//   dateObj.participants += 1;
-//   if (dateObj.participants >= targetTour.maxGroupSize) dateObj.soldOut = true;
-
-//   await targetTour.save();
-
-//   await Booking.create({ tour, user, price, startDate });
-
-//   res.redirect(req.originalUrl.split('?')[0]); // remove all params (query strings) for not show up on browser
-// });
-
-const createBookingCheckout = async (session) => {
+const createBookingCheckout = async (session, lineItems) => {
   const tour = session.client_reference_id;
   const user = (await User.findOne({ email: session.customer_email })).id;
-  const price = session.line_items[0].price_data.unit_amount / 100;
-  const startDate = session.line_items[0].price_data.product_data.start_date;
+  const price = lineItems.data[0].price_data.unit_amount / 100;
+  const startDate = session.metadata.start_date;
 
   const targetTour = await Tour.findById(tour);
   // if (!targetTour) {
@@ -120,7 +88,7 @@ const createBookingCheckout = async (session) => {
   await Booking.create({ tour, user, price, startDate });
 };
 
-exports.webhookCheckout = (req, res, next) => {
+exports.webhookCheckout = async (req, res, next) => {
   const signature = req.headers['stripe-signature'];
 
   let event;
@@ -128,14 +96,18 @@ exports.webhookCheckout = (req, res, next) => {
     event = stripe.webhooks.constructEvent(
       req.body,
       signature,
-      process.eventNames.STRIPE_WEBHOOK_SECRET,
+      process.env.STRIPE_WEBHOOK_SECRET,
     );
   } catch (err) {
     return res.status(400).send(`Webhook error: ${err.message}`);
   }
 
-  if (event.type === 'checkout-session-complete') {
-    createBookingCheckout(event.data.object);
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+    const lineItems = await stripe.checkout.session.listLineItmes(session.id, {
+      limit: 1,
+    });
+    await createBookingCheckout(session, lineItems);
   }
 
   res.status(200).json({ recieved: true });
