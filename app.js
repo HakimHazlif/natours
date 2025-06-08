@@ -22,7 +22,7 @@ const { webhookCheckout } = require('./controllers/bookingController');
 
 const app = express();
 
-app.enable('trust proxy');
+app.set('trust proxy', 1);
 
 const { window } = new JSDOM('');
 const DOMPurify = createDOMPurify(window);
