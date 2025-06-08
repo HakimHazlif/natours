@@ -107,13 +107,13 @@ exports.webhookCheckout = async (req, res, next) => {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    const lineItems = await stripe.checkout.session.listLineItmes(session.id, {
+    const lineItems = await stripe.checkout.session.listLineItems(session.id, {
       limit: 1,
     });
     await createBookingCheckout(session, lineItems);
   }
 
-  res.status(200).json({ recieved: true });
+  res.status(200).json({ received: true });
 };
 
 exports.createBooking = createOne(Booking);
