@@ -9,6 +9,7 @@ const {
   getMyTours,
   getConfirmedEmail,
   checkConfirmEmail,
+  alert,
 } = require('../controllers/viewController');
 const {
   isLoggedIn,
@@ -18,6 +19,8 @@ const {
 // const { createBookingCheckout } = require('../controllers/bookingController');
 
 const router = express.Router();
+
+router.use(alert);
 
 // router.get('/', createBookingCheckout, isLoggedIn, getOverview);
 router.get('/', isLoggedIn, getOverview);
