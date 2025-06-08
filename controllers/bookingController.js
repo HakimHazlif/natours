@@ -1,4 +1,5 @@
 const Stripe = require('stripe');
+const dotenv = require('dotenv');
 const Tour = require('../models/tourModel');
 const User = require('../models/userModel');
 const Booking = require('../models/bookingModel');
@@ -11,6 +12,8 @@ const {
   getAll,
 } = require('./handlerFactory');
 const AppError = require('../utils/appError');
+
+dotenv.config({ path: './config.env' });
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
