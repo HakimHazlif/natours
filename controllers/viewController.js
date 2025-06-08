@@ -152,7 +152,7 @@ exports.updateUserData = catchAsync(async (req, res) => {
     });
 });
 
-exports.alert = (req, res, next) => {
+exports.alerts = (req, res, next) => {
   const { alert } = req.query;
 
   if (alert === 'booking')
